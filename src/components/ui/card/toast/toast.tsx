@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { capitalizeText } from '../../../../helpers/text_formatter'
 
 interface ToastProps {
   message: string
@@ -18,8 +19,10 @@ export default function Toast({ message, isError }: ToastProps) {
 
   return (
     <div className={`${isShowToast ? 'block' : 'invisible'} toast`}>
-      <div className={`alert alert-info ${isError ? 'bg-red-400':  ''}`}>
-        <span className='font-bold'>{message}</span>
+      <div
+        className={`alert alert-info rounded-md ${isError ? 'bg-red-400' : ''}`}
+      >
+        <span className='font-bold'>{capitalizeText(message)}</span>
       </div>
     </div>
   )

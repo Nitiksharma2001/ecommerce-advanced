@@ -29,7 +29,7 @@ export default function Home() {
       <div
         className={`${
           isRightSidebarOpen ? 'block' : 'invisible'
-        } bg-base-200 h-52 fixed bottom-0 z-10`}
+        } bg-base-200 h-52 fixed bottom-0 z-10 w-screen flex`}
         onDrop={onProductDrop}
         onDragOver={(e) => e.preventDefault()}
       >

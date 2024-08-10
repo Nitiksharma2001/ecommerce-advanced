@@ -11,7 +11,6 @@ export default function ProductCard({ product }: { product: ProductType }) {
       <div className='card-body'>
         <h2 className='card-title'>
           {product.title}
-          <div className='badge badge-secondary'>NEW</div>
         </h2>
         <p>{product.description.substring(0, 70)}....</p>
 

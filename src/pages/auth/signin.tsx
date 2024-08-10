@@ -1,21 +1,27 @@
 import { useNavigate } from 'react-router-dom'
 import { signin } from '../../apis/auth'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { UserContext, UserContextType } from '../../hooks/context'
 
 export default function Signin() {
   const { updateUser } = useContext(UserContext) as UserContextType
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
   const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const username = formData.get('username') as string
-    const password = formData.get('password') as string
+    try {
+      e.preventDefault()
+      setIsLoading(true)
+      const formData = new FormData(e.currentTarget)
+      const username = formData.get('username') as string
+      const password = formData.get('password') as string
 
-    const user = await signin(username, password)
-    if (user) {
-      updateUser(user)
-      navigate('/')
+      const user = await signin(username, password)
+      if (user) {
+        updateUser(user)
+        navigate('/')
+      }
+    } finally {
+      setIsLoading(false)
     }
   }
   return (
@@ -66,7 +72,9 @@ export default function Signin() {
                     </label>
                   </div>
                   <button className='btn btn-info text-white'>
-                    {/* <span className='loading loading-spinner'></span> */}
+                    {isLoading && (
+                      <span className='loading loading-spinner'></span>
+                    )}
                     Submit
                   </button>
                 </div>
