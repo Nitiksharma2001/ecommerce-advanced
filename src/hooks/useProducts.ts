@@ -26,9 +26,9 @@ export default function useProducts() {
           await fetch(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/products?_page=${currentPage}&limit=10  `
+            }/products?skip=${(currentPage-1)*10}&limit=10  `
           )
-        ).json()) as ProductType[]
+        ).json()).products as ProductType[]
 
         window.addEventListener('scroll', onScrollBottom)
 

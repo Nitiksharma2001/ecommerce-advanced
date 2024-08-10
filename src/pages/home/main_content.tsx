@@ -9,7 +9,12 @@ export default function MainContent() {
       <div className='flex flex-wrap justify-center gap-8 py-4'>
         {products &&
           products.map((product) => (
-            <div className='card bg-base-100 w-80 shadow-xl cursor-pointer hover:scale-105 duration-75' key={product.id}>
+            <div
+              className='card bg-base-100 w-80 shadow-xl cursor-pointer hover:scale-105 duration-75'
+              draggable
+              onDragStart={e => e.dataTransfer.setData('product_card', JSON.stringify(product))}
+              key={product.id}
+            >
               <ProductCard product={product} />
             </div>
           ))}
