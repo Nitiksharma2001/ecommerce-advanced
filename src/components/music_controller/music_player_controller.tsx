@@ -17,8 +17,7 @@ export default function Audio({ songDetails = songs[0] }) {
   const progressIdRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
-    if (!audioRef.current || !progressRef.current)
-      return
+    if (!audioRef.current || !progressRef.current) return
 
     progressRef.current.value = '0'
     // volumeRef.current.value = '0'
@@ -32,50 +31,42 @@ export default function Audio({ songDetails = songs[0] }) {
   }, [songDetails.url])
 
   const onLoadedMetadata = () => {
-    if (!audioRef.current)
-      return
+    if (!audioRef.current) return
     setDuration(audioRef.current.duration)
     setIsLoadingSong(false)
   }
 
   const updateProgressBar = (time = 10) => {
-    return () => {
-      progressIdRef.current = setInterval(() => {
-        if (!progressRef.current || !audioRef.current)
-          return
-        progressRef.current.value = (
-          (audioRef.current.currentTime * 100.0)
-          / duration
-        ).toString()
-      }, time)
-    }
+    progressIdRef.current = setInterval(() => {
+      if (!progressRef.current || !audioRef.current) return
+      progressRef.current.value = (
+        (audioRef.current.currentTime * 100.0) /
+        duration
+      ).toString()
+    }, time)
   }
 
   const onProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!audioRef.current || !progressRef.current)
-      return
+    if (!audioRef.current || !progressRef.current) return
     progressRef.current.value = e.target.value
     audioRef.current.currentTime = (Number(e.target.value) / 100) * duration
   }
 
   const changePlayback = () => {
-    if (!audioRef.current)
-      return
+    if (!audioRef.current) return
     setIsPlaying(!isPlaying)
     if (isPlaying) {
       audioRef.current.pause()
-    }
-    else {
+    } else {
       audioRef.current.play()
     }
   }
   const forBackAudio = (time = 1) => {
-    if (!audioRef.current || !progressRef.current)
-      return
+    if (!audioRef.current || !progressRef.current) return
     audioRef.current.currentTime += time
     progressRef.current.value = (
-      (audioRef.current.currentTime * 100.0)
-      / duration
+      (audioRef.current.currentTime * 100.0) /
+      duration
     ).toString()
   }
 
@@ -92,25 +83,24 @@ export default function Audio({ songDetails = songs[0] }) {
         onPause={() => clearInterval(progressIdRef.current)}
         onLoadedMetadata={onLoadedMetadata}
         src={songDetails.url}
-      >
-      </audio>
+      ></audio>
       <>
-        <div className="bg-white p-8 rounded-lg shadow-md w-80">
+        <div className='bg-white p-8 rounded-lg shadow-md w-80'>
           <LazyLoadImage
-            effect="blur"
+            effect='blur'
             src={songDetails.artwork}
-            className="w-64 h-64 mx-auto rounded-lg mb-4 shadow-lg shadow-teal-50"
+            className='w-64 h-64 mx-auto rounded-lg mb-4 shadow-lg shadow-teal-50'
           />
 
-          <h2 className="text-xl font-semibold text-center">
+          <h2 className='text-xl font-semibold text-center'>
             {songDetails.title}
           </h2>
-          <p className="text-gray-600 text-sm text-center">
+          <p className='text-gray-600 text-sm text-center'>
             {songDetails.artist}
           </p>
-          <div className="mt-6 flex justify-center items-center">
+          <div className='mt-6 flex justify-center items-center'>
             <button
-              className="p-3 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none"
+              className='p-3 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none'
               onClick={() => forBackAudio(-1)}
             >
               <IoPlayBack />
@@ -124,22 +114,22 @@ export default function Audio({ songDetails = songs[0] }) {
               {isPlaying ? <FaPause /> : <FaPlay />}
             </button>
             <button
-              className="p-3 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none"
+              className='p-3 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none'
               onClick={() => forBackAudio()}
             >
               <IoPlayForward />
             </button>
           </div>
-          <div className="mt-6 h-2 rounded-full">
+          <div className='mt-6 h-2 rounded-full'>
             <input
-              type="range"
+              type='range'
               onChange={onProgressChange}
               ref={progressRef}
-              className="bg-teal-500 h-2 rounded-full w-full"
+              className='bg-teal-500 h-2 rounded-full w-full'
               defaultValue={0}
             />
           </div>
-          <div className="flex justify-between mt-2 text-sm text-gray-600">
+          <div className='flex justify-between mt-2 text-sm text-gray-600'>
             <span>0</span>
             <span>{formatDurationProgressbar(duration)}</span>
           </div>
