@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ProductType } from '../types/products'
+import type { ProductType } from '../types/products'
 
 export default function useProducts() {
   const [isLoading, setIsloading] = useState(false)
@@ -10,8 +10,8 @@ export default function useProducts() {
 
   const onScrollBottom = () => {
     if (
-      window.scrollY + window.innerHeight + 10 >=
-      document.documentElement.scrollHeight
+      window.scrollY + window.innerHeight + 10
+      >= document.documentElement.scrollHeight
     ) {
       setCurrentPage(currentPage + 1)
     }
@@ -26,7 +26,7 @@ export default function useProducts() {
           await fetch(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/products?skip=${(currentPage-1)*10}&limit=10  `
+            }/products?skip=${(currentPage - 1) * 10}&limit=10  `,
           )
         ).json()).products as ProductType[]
 
@@ -34,14 +34,17 @@ export default function useProducts() {
 
         if (products) {
           setProducts([...products, ...data])
-        } else {
+        }
+        else {
           setProducts(data)
         }
-      } catch (err) {
+      }
+      catch (err) {
         setIsloading(false)
         setIsError(true)
         setMessage((err as Error).message)
-      } finally {
+      }
+      finally {
         setIsloading(false)
         setIsError(false)
         setMessage('products fetched successfully')

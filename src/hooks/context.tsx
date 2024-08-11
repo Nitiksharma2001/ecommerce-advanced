@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { LoginType } from '../types/users'
-import { ProductType } from '../types/products'
+import type { LoginType } from '../types/users'
+import type { ProductType } from '../types/products'
 import { updateCart } from '../helpers/localstorage'
 
 export interface UserContextType {
@@ -12,7 +12,7 @@ export interface UserContextType {
 }
 
 export const UserContext = React.createContext<UserContextType | undefined>(
-  undefined
+  undefined,
 )
 const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -22,21 +22,22 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateUser = (userDetails: LoginType | undefined) => {
     setUser(userDetails)
-    if(userDetails){
+    if (userDetails) {
       localStorage.setItem('user_details', JSON.stringify(userDetails))
     }
-    else{
+    else {
       localStorage.removeItem('user_details')
     }
   }
 
   const addToCart = (product: ProductType) => {
-    if (cart.find((item) => item.id === product.id)) return
+    if (cart.find(item => item.id === product.id))
+      return
     updateCart([...cart, product])
     setCart([...cart, product])
   }
   const deleteFromCart = (product: ProductType) => {
-    const updatedCart = cart.filter((item) => item.id !== product.id)
+    const updatedCart = cart.filter(item => item.id !== product.id)
     setCart(updatedCart)
     updateCart(updatedCart)
   }
@@ -49,7 +50,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         window.history.pushState(null, '', '/signin')
         window.location.reload()
       }
-    } else {
+    }
+    else {
       setUser(JSON.parse(localUser))
     }
 

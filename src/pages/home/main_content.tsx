@@ -6,21 +6,21 @@ export default function MainContent() {
   const { products, isLoading, isError, message } = useProducts()
   return (
     <>
-      <div className='flex flex-wrap justify-center gap-8 py-4'>
-        {products &&
-          products.map((product) => (
-            <div
-              className='card bg-base-100 w-80 shadow-xl cursor-pointer hover:scale-105 duration-75'
-              draggable
-              onDragStart={e => e.dataTransfer.setData('product_card', JSON.stringify(product))}
-              key={product.id}
-            >
-              <ProductCard product={product} />
-            </div>
-          ))}
+      <div className="flex flex-wrap justify-center gap-8 py-4">
+        {products
+        && products.map(product => (
+          <div
+            className="card bg-base-100 w-80 shadow-xl cursor-pointer hover:scale-105 duration-75"
+            draggable
+            onDragStart={e => e.dataTransfer.setData('product_card', JSON.stringify(product))}
+            key={product.id}
+          >
+            <ProductCard product={product} />
+          </div>
+        ))}
       </div>
-      <div className='flex items-center justify-center'>
-        {isLoading && <span className='loading loading-dots loading-lg'></span>}
+      <div className="flex items-center justify-center">
+        {isLoading && <span className="loading loading-dots loading-lg"></span>}
       </div>
       <Toast message={message} isError={isError} />
     </>
