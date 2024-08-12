@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { capitalizeText } from '../../../../helpers/text_formatter'
+import { capitalizeText } from '../../../helpers/text_formatter'
 
 interface ToastProps {
   message: string

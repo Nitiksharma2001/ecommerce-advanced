@@ -26,7 +26,7 @@ export default function useProducts() {
           await fetch(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/products?skip=${(currentPage - 1) * 10}&limit=10  `,
+            }/products?skip=${(currentPage - 1) * 10}&limit=10`,
           )
         ).json()).products as ProductType[]
 
