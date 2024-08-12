@@ -1,11 +1,11 @@
 import useCategories from '../../../hooks/useCategories'
 
 export default function Category({
-  updateSelectedCategories,
-  selectedCategories,
+  updateSelectedCategory,
+  selectedCategory,
 }: {
-  selectedCategories: string[]
-  updateSelectedCategories: (category: string) => void
+  selectedCategory: string
+  updateSelectedCategory: (category: string) => void
 }) {
   const { categories, isLoading } = useCategories()
   if (isLoading) {
@@ -16,10 +16,10 @@ export default function Category({
       {categories.map((category) => (
         <button
           className={`btn text-nowrap ${
-            selectedCategories.includes(category.slug) &&
+            selectedCategory.includes(category.slug) &&
             'bg-gray-400 hover:bg-gray-500'
           }`}
-          onClick={() => updateSelectedCategories(category.slug)}
+          onClick={() => updateSelectedCategory(category.slug)}
           key={category.name}
         >
           {category.name}

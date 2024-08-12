@@ -1,48 +1,53 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import ProductCard from '../../../components/ui/card/product_card'
 import Toast from '../../../components/ui/toast/toast'
 import { UserContext, UserContextType } from '../../../hooks/context'
 import useProducts from '../../../hooks/useProducts'
 import Category from './categories'
-import { ProductType } from '../../../types/products'
-
-const getLocalCategories = () => {
-  const categories = localStorage.getItem('categories')
-  return categories ? (JSON.parse(categories) as string[]) : []
-}
+import { useSearchParams } from 'react-router-dom'
 
 export default function MainContent() {
   const { products, isLoading, isError, message } = useProducts()
   const { addToCart } = useContext(UserContext) as UserContextType
-  const [selectedCategories, setSelectedCategories] =
-    useState<string[]>(getLocalCategories)
+  const [selectedCategory, setSelectedCategory] = useState('')
 
-  const updateSelectedCategories = (category: string) => {
-    let categories = [...selectedCategories, category]
-    if (selectedCategories.includes(category)) {
-      categories = selectedCategories.filter((cat) => cat !== category)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  useEffect(() => {
+    const categoryString = searchParams.get('category') || ''
+    setSelectedCategory(categoryString)
+  }, [])
+
+  useEffect(() => {
+    updateSearchParams()
+  }, [selectedCategory])
+
+  const updateSelectedCategory = (category: string) => {
+    if(selectedCategory === category){
+      return setSelectedCategory('')
     }
-    localStorage.setItem('categories', JSON.stringify(categories))
-    setSelectedCategories(categories)
+    setSelectedCategory(category)
   }
 
-  const updateList = (products: ProductType[]) => {
-    if (selectedCategories.length === 0) return products
-    return products.filter((product) =>
-      selectedCategories.includes(product.category)
-    )
+  const updateSearchParams = () => {
+    const joinList = []
+    if (selectedCategory) {
+      joinList.push('category=' + selectedCategory)
+    }
+    setSearchParams('?' + joinList.join('&'))
   }
+
   return (
     <>
       <div className='px-4 py-2 w-full gap-2 flex grow overflow-x-scroll no-scrollbar'>
         <Category
-          updateSelectedCategories={updateSelectedCategories}
-          selectedCategories={selectedCategories}
+          updateSelectedCategory={updateSelectedCategory}
+          selectedCategory={selectedCategory}
         />
       </div>
       <div className='flex flex-wrap justify-center gap-8 py-4'>
         {products &&
-          updateList(products).map((product) => (
+          products.filter(product => selectedCategory === '' || product.category === selectedCategory).map((product) => (
             <div
               className='card bg-base-100 w-80 shadow-xl cursor-pointer hover:scale-105 duration-75'
               draggable
