@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ProductType } from '../types/products'
 import { useSearchParams } from 'react-router-dom'
 
