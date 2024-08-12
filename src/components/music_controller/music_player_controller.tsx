@@ -130,7 +130,7 @@ export default function Audio({ songDetails = songs[0] }) {
             />
           </div>
           <div className='flex justify-between mt-2 text-sm text-gray-600'>
-            <span>0</span>
+            <span>0:00</span>
             <span>{formatDurationProgressbar(duration)}</span>
           </div>
         </div>

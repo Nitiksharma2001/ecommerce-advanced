@@ -1,6 +1,5 @@
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import type { ProductType } from '../../../types/products'
-import { IoIosAddCircleOutline } from 'react-icons/io'
 
 export default function ProductCard({ product }: { product: ProductType }) {
   return (
