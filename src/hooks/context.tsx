@@ -11,12 +11,8 @@ export interface UserContextType {
   deleteFromCart: (product: ProductType) => void
 }
 
-export const UserContext = React.createContext<UserContextType | undefined>(
-  undefined,
-)
-const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const UserContext = React.createContext<UserContextType | undefined>(undefined)
+const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<LoginType | undefined>(undefined)
   const [cart, setCart] = React.useState<ProductType[]>([])
 
@@ -24,20 +20,18 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(userDetails)
     if (userDetails) {
       localStorage.setItem('user_details', JSON.stringify(userDetails))
-    }
-    else {
+    } else {
       localStorage.removeItem('user_details')
     }
   }
 
   const addToCart = (product: ProductType) => {
-    if (cart.find(item => item.id === product.id))
-      return
+    if (cart.find((item) => item.id === product.id)) return
     updateCart([...cart, product])
     setCart([...cart, product])
   }
   const deleteFromCart = (product: ProductType) => {
-    const updatedCart = cart.filter(item => item.id !== product.id)
+    const updatedCart = cart.filter((item) => item.id !== product.id)
     setCart(updatedCart)
     updateCart(updatedCart)
   }
@@ -50,8 +44,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         window.history.pushState(null, '', '/signin')
         window.location.reload()
       }
-    }
-    else {
+    } else {
       setUser(JSON.parse(localUser))
     }
 
@@ -61,9 +54,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [])
 
   return (
-    <UserContext.Provider
-      value={{ user, updateUser, cart, addToCart, deleteFromCart }}
-    >
+    <UserContext.Provider value={{ user, updateUser, cart, addToCart, deleteFromCart }}>
       {children}
     </UserContext.Provider>
   )

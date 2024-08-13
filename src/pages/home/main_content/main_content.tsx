@@ -1,29 +1,45 @@
-import { useContext, useEffect, useState } from 'react'
 import ProductCard from '../../../components/ui/card/product_card'
 import Toast from '../../../components/ui/toast/toast'
-import { UserContext, UserContextType } from '../../../hooks/context'
-import useProducts from '../../../hooks/useProducts'
 import Category from './categories'
+import { useContext, useEffect, useState } from 'react'
+import { UserContext, UserContextType } from '../../../hooks/context'
 import { useSearchParams } from 'react-router-dom'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { ProductType } from '../../../types/products'
+
+interface ProductResponseType {
+  skip: number
+  products: ProductType[]
+  limit: number
+  total: number
+}
 
 export default function MainContent() {
-  const { products, isLoading, isError, message } = useProducts()
   const { addToCart } = useContext(UserContext) as UserContextType
-  const [selectedCategory, setSelectedCategory] = useState('')
-
   const [searchParams, setSearchParams] = useSearchParams()
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '')
 
-  useEffect(() => {
-    const categoryString = searchParams.get('category') || ''
-    setSelectedCategory(categoryString)
-  }, [])
+  const getProducts = ({ pageParam }: { pageParam: number }): Promise<ProductResponseType> => {
+    const getUrl = `${import.meta.env.VITE_BACKEND_URL}/products${
+      selectedCategory ? `/category/${selectedCategory}` : ''
+    }?skip=${(pageParam - 1) * 10}&limit=10`
 
-  useEffect(() => {
-    updateSearchParams()
-  }, [selectedCategory])
+    return fetch(getUrl).then((res) => res.json())
+  }
 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError } = useInfiniteQuery({
+    queryKey: ['products', selectedCategory],
+    queryFn: getProducts,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      if (lastPage.products.length === 0) {
+        return undefined
+      }
+      return lastPageParam + 1
+    },
+  })
   const updateSelectedCategory = (category: string) => {
-    if(selectedCategory === category){
+    if (selectedCategory === category) {
       return setSelectedCategory('')
     }
     setSelectedCategory(category)
@@ -37,34 +53,47 @@ export default function MainContent() {
     setSearchParams('?' + joinList.join('&'))
   }
 
+  useEffect(() => {
+    updateSearchParams()
+
+    const onScrollBottom = () => {
+      if (isFetchingNextPage) return
+      if (!hasNextPage) return
+      if (window.scrollY + window.innerHeight + 10 >= document.documentElement.scrollHeight) {
+        fetchNextPage()
+      }
+    }
+    window.addEventListener('scroll', onScrollBottom)
+
+    return () => {
+      window.removeEventListener('scroll', onScrollBottom)
+    }
+  }, [hasNextPage, isFetchingNextPage])
+
   return (
     <>
       <div className='px-4 py-2 w-full gap-2 flex grow overflow-x-scroll no-scrollbar'>
-        <Category
-          updateSelectedCategory={updateSelectedCategory}
-          selectedCategory={selectedCategory}
-        />
+        <Category updateSelectedCategory={updateSelectedCategory} selectedCategory={selectedCategory} />
       </div>
       <div className='flex flex-wrap justify-center gap-8 py-4'>
-        {products &&
-          products.filter(product => selectedCategory === '' || product.category === selectedCategory).map((product) => (
+        {data?.pages.map((page) =>
+          page.products.map((product) => (
             <div
               className='card bg-base-100 w-80 shadow-xl cursor-pointer hover:scale-105 duration-75'
               draggable
-              onDragStart={(e) =>
-                e.dataTransfer.setData('product_card', JSON.stringify(product))
-              }
+              onDragStart={(e) => e.dataTransfer.setData('product_card', JSON.stringify(product))}
               key={product.id}
               onDoubleClick={() => addToCart(product)}
             >
               <ProductCard product={product} />
             </div>
-          ))}
+          ))
+        )}
       </div>
       <div className='flex items-center justify-center'>
-        {isLoading && <span className='loading loading-dots loading-lg'></span>}
+        {isFetchingNextPage && <span className='loading loading-dots loading-lg'></span>}
       </div>
-      <Toast message={message} isError={isError} />
+      {!isFetchingNextPage && <Toast message={'Successfully Loaded'} isError={isError} />}
     </>
   )
 }
