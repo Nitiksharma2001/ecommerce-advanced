@@ -27,7 +27,7 @@ export default function MainContent() {
     return fetch(getUrl).then((res) => res.json())
   }
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useInfiniteQuery({
     queryKey: ['products', selectedCategory],
     queryFn: getProducts,
     initialPageParam: 1,
@@ -91,7 +91,7 @@ export default function MainContent() {
         )}
       </div>
       <div className='flex items-center justify-center'>
-        {isFetchingNextPage && <span className='loading loading-dots loading-lg'></span>}
+        {isLoading && <span className='loading loading-dots loading-lg'></span>}
       </div>
       {!isFetchingNextPage && <Toast message={'Successfully Loaded'} isError={isError} />}
     </>
