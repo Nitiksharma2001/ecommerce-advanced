@@ -26,6 +26,13 @@ export default function Home() {
       <div className='navbar bg-base-100'>
         <Navbar changeRightSidebarOpen={changeRightSidebarOpen} />
       </div>
+      <div className='flex justify-center'>
+        <div className='w-max'>
+          <h1 className='animate-typing overflow-hidden whitespace-nowrap text-3xl text-blue-700 font-semibold'>
+            Now or Never sale.......
+          </h1>
+        </div>
+      </div>
       <div>
         <MainContent />
       </div>

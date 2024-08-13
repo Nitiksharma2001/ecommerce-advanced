@@ -20,7 +20,7 @@ export default function Toast({ message, isError }: ToastProps) {
   return (
     <div className={`${isShowToast ? 'block' : 'invisible'} toast`}>
       <div
-        className={`alert alert-info rounded-md ${isError ? 'bg-red-400' : ''}`}
+        className={`alert bg-red-400 text-white rounded-md ${isError ? 'bg-red-400' : ''}`}
       >
         <span className="font-bold">{capitalizeText(message)}</span>
       </div>

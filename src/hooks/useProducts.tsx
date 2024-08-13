@@ -33,7 +33,9 @@ export default function useProducts() {
         setMessage('')
         const response: ResponseType = await (
           await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/products?skip=${
+            `${import.meta.env.VITE_BACKEND_URL}/products${
+              category ? `/category/${category}` : ''
+            }?skip=${
               (currentPage - 1) * 10
             }&limit=10`
           )
